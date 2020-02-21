@@ -30,7 +30,7 @@
 #import "RMStep.h"
 
 #define RM_CANCEL_BUTTON_WIDTH 50
-#define RM_MINIMAL_STEP_WIDTH 40
+//#define RM_MINIMAL_STEP_WIDTH ([UIScreen mainScreen].bounds.size.width/3.3)
 #define RM_SEPERATOR_WIDTH 10
 
 #define RM_LEFT_SEPERATOR_KEY @"RM_LEFT_SEPERATOR_KEY"
@@ -52,11 +52,7 @@
 
 #pragma mark - Helper Classes
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 @interface RMStepSeperatorView : UIView<CAAnimationDelegate>
-#else
-@interface RMStepSeperatorView : UIView
-#endif
 
 @property (nonatomic, strong) CAShapeLayer *leftShapeLayer;
 @property (nonatomic, strong) CAShapeLayer *rightShapeLayer;
@@ -218,9 +214,7 @@
 
 @implementation RMStepsBar
 
-@dynamic delegate;
-
-@synthesize seperatorColor = _seperatorColor;
+@synthesize seperatorColor = _seperatorColor, delegate = _delegate;
 
 #pragma mark - Init and Dealloc
 - (id)initWithFrame:(CGRect)frame {
@@ -402,7 +396,7 @@
                 step.titleLabel.textColor = step.enabledTextColor;
                 step.numberLabel.textColor = step.enabledTextColor;
                 step.circleLayer.strokeColor = step.enabledTextColor.CGColor;
-                step.hideNumberLabel = NO;
+                step.hideNumberLabel = YES;
             };
             
             if(animated)
@@ -418,7 +412,7 @@
                 step.titleLabel.textColor = step.selectedTextColor;
                 step.numberLabel.textColor = step.selectedTextColor;
                 step.circleLayer.strokeColor = step.selectedTextColor.CGColor;
-                step.hideNumberLabel = self.hideNumberLabelWhenActiveStep;
+                step.hideNumberLabel = YES;
             };
             
             if(animated)
@@ -434,7 +428,7 @@
                 step.titleLabel.textColor = step.disabledTextColor;
                 step.numberLabel.textColor = step.disabledTextColor;
                 step.circleLayer.strokeColor = step.disabledTextColor.CGColor;
-                step.hideNumberLabel = NO;
+                step.hideNumberLabel = YES;
             };
             
             if(animated)
@@ -448,6 +442,11 @@
     }];
 }
 
+- (CGFloat)getminimumStepWidth:(NSUInteger)numberOfSteps {
+    CGFloat width = [UIScreen mainScreen].bounds.size.width - numberOfSteps*RM_SEPERATOR_WIDTH - (_hideCancelButton ? 0 : RM_CANCEL_BUTTON_WIDTH);
+    
+    return width/numberOfSteps;
+}
 
 #pragma mark - Actions
 - (void)reloadData {
@@ -482,7 +481,7 @@
         UIView *leftEnd = leftSeperator ? leftSeperator : self.cancelSeperator;
         UIView *rightEnd = rightSeperator ? rightSeperator : self;
         UIView *stepView = step.stepView;
-        NSNumber *minimalStepWidth = @(RM_MINIMAL_STEP_WIDTH);
+        NSNumber *minimalStepWidth = @([self getminimumStepWidth:numberOfSteps]);
         NSNumber *seperatorWidth = @(RM_SEPERATOR_WIDTH);
         
         NSDictionary *bindingsDict = NSDictionaryOfVariableBindings(leftEnd, rightEnd, stepView);
@@ -526,9 +525,10 @@
         
         if(CGRectContainsPoint(step.stepView.frame, touchLocation)) {
             NSInteger index = [self.stepDictionaries indexOfObject:aStepDict];
-            if(index < self.indexOfSelectedStep && self.allowBackward) {
+//            if(index < self.indexOfSelectedStep && self.allowBackward) {
+//                NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 [self.delegate stepsBar:self shouldSelectStepAtIndex:index];
-            }
+//            }
         }
     }
 }

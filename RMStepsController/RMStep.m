@@ -94,9 +94,15 @@
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.text = self.title;
         _titleLabel.textColor = self.disabledTextColor;
-        _titleLabel.textAlignment = NSTextAlignmentLeft;
+        _titleLabel.textAlignment = NSTextAlignmentCenter;
+        _titleLabel.numberOfLines = 0;
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont systemFontSize]];
+        if (@available(iOS 8.2, *)) {
+            _titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightLight];
+        } else {
+            // Fallback on earlier versions
+        }
+        
         _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     
