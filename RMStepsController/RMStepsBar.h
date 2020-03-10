@@ -109,6 +109,7 @@
  Used to allow user to go back.
  */
 @property (nonatomic, assign) BOOL allowBackward;
+@property (nonatomic, assign) BOOL allowForward;
 
 /**
  Used to access the cancel button and to customize its appearance.

@@ -31,6 +31,11 @@
 @end
 
 @implementation RMModalStepsController
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.stepsBar.allowForward = YES;
+}
+
 
 - (NSArray *)stepViewControllers {
     UIViewController *firstStep = [self.storyboard instantiateViewControllerWithIdentifier:@"SomeStep"];
